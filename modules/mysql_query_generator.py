@@ -22,9 +22,9 @@ connector = sql.create_connection(host="localhost",
 response = client.complete(
     messages=[
         SystemMessage("So you are an expert at SQL querries and you can generate SQL queries from natural language questions. and you are given a schema " 
-        "The schema is as follows: \n"
+                    "of a database and you can generate SQL queries from natural language questions . Here is the schema of the database: "    
       ),
-        UserMessage("What is the capital of France?"),
+        UserMessage(""),
     ],
     temperature=1.0,
     top_p=1.0,

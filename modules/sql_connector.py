@@ -54,3 +54,21 @@ def execute_update(connection, query):
         connection.rollback()
     finally:
         cursor.close()
+
+def fetch_all_tables(connection):
+    """Fetch all tables in the connected database."""
+    if connection is None:
+        print("No valid database connection.")
+        return None
+    
+    query = "SHOW TABLES"
+    return execute_query(connection, query)
+
+def fetch_table_schema(connection, table_name):
+    """Fetch the schema of a specific table in the connected database."""
+    if connection is None:
+        print("No valid database connection.")
+        return None
+    
+    query = f"DESCRIBE {table_name}"
+    return execute_query(connection, query)
