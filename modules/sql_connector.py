@@ -15,11 +15,10 @@ def create_connection(host, user, password, database):
     
 def close_connection(connection):
     """Close the connection to the MySQL database."""
-    if connection.is_connected():
-        connection.close()
-        print("Connection to the database has been closed.")
-    else:
-        print("Connection is already closed or was never established.")
+    
+    connection.close()
+    print("Connection to the database has been closed.")
+
 
 def execute_query(connection, query):
     """Execute a SQL query on the connected database."""

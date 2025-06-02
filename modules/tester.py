@@ -1,4 +1,5 @@
 import sql_connector as sql
+import mysql_query_generator as query_gen
 import pandas as pd
 import os
 import pymysql
@@ -6,32 +7,17 @@ import pymysql
 
 conncection=sql.create_connection("localhost","root","123","classicmodels")
 
-response = sql.fetch_table_schema(conncection, "customers")
-if response is not None:
-    print("Table Schema:")
-    for row in response:
-        print(row)
+while True:
+    request= str(input("Enter your request: "))
+    query = query_gen.generate_mysql_query(request)
 
-##lets make it in a form of a dataframe
-df = pd.DataFrame(response)
-print("\nDataFrame:")
-print(df)
-
-response = sql.execute_query(conncection, "SELECT * FROM customers LIMIT 5")
-df2 = pd.DataFrame(response)
-print("\nDataFrame with Query Results:")
-print(df2)
-
-connection2 = pymysql.connect(
-        host="localhost",
-        user="root",
-        password="123",
-        cursorclass=pymysql.cursors.DictCursor
-        )
-
-response = sql.fetch_database_info(connection2)
+    sql.execute_query(conncection, query)
+    df = pd.DataFrame(sql.execute_query(conncection, query))
+    print(df)
+    if request.lower() == "exit":
+        print("Exiting the program.")
+        break
 
 
+sql.close_connection(conncection)
 
-print("\nDatabase Info:")
-print(response)

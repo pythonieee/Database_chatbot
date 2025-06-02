@@ -1,13 +1,25 @@
 import ollama
-import time 
-t1 = time.time()
-response = ollama.chat(model='mistral', messages=[
-  {
+
+
+def generate_mysql_query(prompt: str) -> str:   
+    """Generate a MySQL query based on the provided prompt using Ollama."""
+    response = ollama.chat(model="qwen2.5-coder", messages=[
+    {
     'role': 'user',
-    'content': 'Generate a MySQL query to get all the records in the customers section '
-    '. The query should be formatted correctly and include a semicolon at the end.and only give me the query and nothing else not even a here is the query or any other text. Just the query itself.',
-  },
+    'content': f"Generate a MySQL query based on the following prompt: {prompt}"
+    ,
+    },
+  {
+    'role': 'system',
+    'content': 'You are a MySQL query generator. You will generate a MySQL query based on the user\'s request. The query should be formatted correctly and include a semicolon at the end. Do not include any additional text or explanations. The query should be formatted correctly and include a semicolon at the end.and only give me the query and nothing else not even a here is the query or any other text. Just the query itself.',
+  }
 ])
-t2 = time.time()
-print(f"Response time: {t2 - t1} seconds")
-print(response['message']['content'])
+
+
+    query=response['message']['content']
+    new_query = query.replace("sql", "")
+    new_query = new_query.replace("```", "")
+    print(new_query)
+    return new_query.strip()  # Return the generated query without leading/trailing whitespace
+
+ 
