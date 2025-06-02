@@ -1,4 +1,5 @@
 import pymysql
+import pandas as pd
 def create_connection(host, user, password, database):
     """Create a connection to the MySQL database."""
  
@@ -30,7 +31,7 @@ def execute_query(connection, query):
     try:
         cursor.execute(query)
         result = cursor.fetchall()
-        return result
+        return result  # Convert result to DataFrame
     except pymysql.Error as err:
         print(f"Error executing query: {err}")
         return None
@@ -62,7 +63,7 @@ def fetch_all_tables(connection):
         return None
     
     query = "SHOW TABLES"
-    return execute_query(connection, query)
+    return [tables.values() for tables in execute_query(connection, query)]
 
 def fetch_table_schema(connection, table_name):
     """Fetch the schema of a specific table in the connected database."""
@@ -71,4 +72,14 @@ def fetch_table_schema(connection, table_name):
         return None
     
     query = f"DESCRIBE {table_name}"
-    return execute_query(connection, query)
+    return pd.DataFrame(execute_query(connection, query))
+
+def fetch_database_info(connection):
+    """Fetch information about the connected database."""
+    if connection is None:
+        print("No valid database connection.")
+        return None
+    
+    query = "show databases ; "
+    return pd.DataFrame(execute_query(connection, query))
+
