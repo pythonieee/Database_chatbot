@@ -9,15 +9,18 @@ conncection=sql.create_connection("localhost","root","123","classicmodels")
 
 while True:
     request= str(input("Enter your request: "))
-    query = query_gen.generate_mysql_query(request)
-
-    sql.execute_query(conncection, query)
-    df = pd.DataFrame(sql.execute_query(conncection, query))
-    print(df)
-    if request.lower() == "exit":
+    if f"{request.lower()}".strip() == "exit":
         print("Exiting the program.")
         break
-
-
+    query = query_gen.generate_mysql_query(request)
+    sql.execute_query(conncection, query)
+    df = pd.DataFrame(sql.execute_query(conncection, query))
+    
+    if df.empty:
+        print("No data found for the query.")
+    else:
+        print("Query executed successfully. Here are the results:")
+        print(df)
+    
 sql.close_connection(conncection)
 

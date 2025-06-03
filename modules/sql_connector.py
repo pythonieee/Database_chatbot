@@ -26,34 +26,32 @@ def execute_query(connection, query):
         print("No valid database connection.")
         return None
     
-    cursor = connection.cursor()
-    try:
-        cursor.execute(query)
-        result = cursor.fetchall()
-        return result  # Convert result to DataFrame
-    except pymysql.Error as err:
-        print(f"Error executing query: {err}")
-        return None
+    if  query.lower().strip().startswith("select") or query.lower().strip().startswith("show") or query.lower().strip().startswith("describe")or query.lower().strip().startswith("explain"):
+        cursor = connection.cursor()
+        try:
+            cursor.execute(query)
+            result = cursor.fetchall()
+            return result
+        except pymysql.Error as err:
+            print(f"Error executing query: {err}")
+            return None
+        finally:
+            cursor.close()
+    else :
+        cursor = connection.cursor()
+        try:
+            cursor.execute(query)
+            connection.commit()
+            print("Update executed successfully.")
+        except pymysql.Error as err:
+            print(f"Error executing update: {err}")
+            connection.rollback()
+        finally:
+            cursor.close()
     
-    finally:
-        cursor.close()
 
-def execute_update(connection, query):
-    """Execute a SQL update query on the connected database."""
-    if connection is None:
-        print("No valid database connection.")
-        return None
+
     
-    cursor = connection.cursor()
-    try:
-        cursor.execute(query)
-        connection.commit()
-        print("Update executed successfully.")
-    except pymysql.Error as err:
-        print(f"Error executing update: {err}")
-        connection.rollback()
-    finally:
-        cursor.close()
 
 def fetch_all_tables(connection):
     """Fetch all tables in the connected database."""
